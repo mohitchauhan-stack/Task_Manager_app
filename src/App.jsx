@@ -28,7 +28,7 @@ function App() {
           <input
             onChange={handleChange}
             value={todo}
-            className="bg-violet-50 w-80"
+            className="bg-violet-50 w-80 h-8 rounded-sm"
             type="text"
             name="todo"
             id="todo"
