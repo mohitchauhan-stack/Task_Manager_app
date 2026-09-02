@@ -1,18 +1,19 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import Navbar from "./components/Navbar";
 
 function App() {
   const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todosArray, setTodosArray] = useState([]);
 
   const handleEdit = () => {};
 
   const handleDelete = () => {};
 
   const handleAdd = () => {
-    setTodos(...todos, { todo, isCompleted: false });
+    setTodosArray([...todosArray, { todo, isCompleted: false, id: uuidv4() }]);
     setTodo("");
-    console.log(todos);
+    console.log(todosArray);
   };
 
   const handleChange = (e) => {
@@ -43,24 +44,38 @@ function App() {
         </div>
         <h2 className="text-xl font-bold">Your Todos</h2>
         <div className="todos">
-          {todos.map((item) => {
-            <div className={item.isCompleted ? "" : "line-through"}>
-              <div className="text">{item.todo}</div>
-              <div className="buttons">
-                <button
-                  onClick={handleEdit}
-                  className="bg-violet-600 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
+          {todosArray.map((todo) => {
+            return (
+              <div className="flex w-full justify-between my-2">
+                <input
+                  onChange={handleCheckBox}
+                  type="checkbox"
+                  value={todo.isCompleted}
+                  name="checkBox"
+                  id="checkBox"
+                />
+                <div
+                  key={todo}
+                  className={`${todo.isCompleted ? "line-through" : ""}`}
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="bg-violet-600 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
-                >
-                  Delete
-                </button>
+                  {todo.todo}
+                </div>
+                <div className="buttons">
+                  <button
+                    onClick={handleEdit}
+                    className="bg-violet-900 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="bg-violet-600 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>;
+            );
           })}
         </div>
       </div>
