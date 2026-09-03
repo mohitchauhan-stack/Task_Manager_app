@@ -1,21 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Navbar from "./components/Navbar";
 
 function App() {
-  let [todo, setTodo] = useState("");
-  let [todosArray, setTodosArray] = useState([]);
+  const [todo, setTodo] = useState("");
 
-  const handleEdit = () => {};
+  const [todosArray, setTodosArray] = useState([]);
+
+  useEffect(() => {
+    let todosString = localStorage.getItem("todosArray");
+    if (todosString) {
+      let todosArray = JSON.parse(localStorage.getItem("todosArray"));
+      setTodosArray(todosArray);
+    }
+  }, []);
+
+  const saveToLS = (params) => {
+    localStorage.setItem("todosArray", JSON.stringify(todosArray));
+  };
+
+  const handleEdit = (e, id) => {
+    let todo = todosArray.filter((todo) => todo.id === id);
+    setTodo(todo[0].todo);
+    let newTodosArray = todosArray.filter((todo) => todo.id != id);
+    setTodosArray(newTodosArray);
+    saveToLS();
+  };
 
   const handleDelete = (e, id) => {
-    console.log(id);
+    let newTodosArray = todosArray.filter((todo) => todo.id != id);
+    setTodosArray(newTodosArray);
+    saveToLS();
   };
 
   const handleAdd = () => {
     setTodosArray([...todosArray, { todo, isCompleted: false, id: uuidv4() }]);
     setTodo("");
-    console.log(todosArray);
+    saveToLS();
   };
 
   const handleChange = (e) => {
@@ -30,6 +51,7 @@ function App() {
     let newTodosArray = [...todosArray];
     newTodosArray[index].isCompleted = !newTodosArray[index].isCompleted;
     setTodosArray(newTodosArray);
+    saveToLS();
   };
 
   return (
@@ -51,11 +73,16 @@ function App() {
             onClick={handleAdd}
             className="bg-violet-600 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-3  "
           >
-            Add
+            Save
           </button>
         </div>
         <h2 className="text-xl font-bold">Your Todos</h2>
         <div className="todos">
+          {todosArray.length === 0 && (
+            <div className="my-4 font-bold text-neutral-500">
+              No todos for now{" "}
+            </div>
+          )}
           {todosArray.map((todo) => {
             return (
               <div key={todo.id} className="flex w-full justify-between my-2">
@@ -74,7 +101,7 @@ function App() {
                 </div>
                 <div className="buttons">
                   <button
-                    onClick={handleEdit}
+                    onClick={(e) => handleEdit(e, todo.id)}
                     className="bg-violet-900 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
                   >
                     Edit
