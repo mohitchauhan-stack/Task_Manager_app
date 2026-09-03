@@ -1,3 +1,5 @@
+import { faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Navbar from "./components/Navbar";
@@ -57,13 +59,13 @@ function App() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto min-h-[90vh]  bg-violet-200 p-4 rounded-2xl my-2">
-        <div className="add_todo my-5">
+      <div className="container mx-auto h-[100vh] w-[400px]  bg-violet-200 p-4 rounded-2xl my-2">
+        <div className="add_todo w-full my-5">
           <h2 className="text-lg font-bold">Add a todo</h2>
           <input
             onChange={handleChange}
             value={todo}
-            className="bg-violet-50 w-80 h-8 rounded-sm"
+            className="bg-violet-50 h-8 rounded-sm"
             type="text"
             name="todo"
             id="todo"
@@ -85,7 +87,7 @@ function App() {
           )}
           {todosArray.map((todo) => {
             return (
-              <div key={todo.id} className="flex w-full justify-between my-2">
+              <div key={todo.id} className="flex justify-between my-2">
                 <input
                   onChange={handleCheckBox}
                   type="checkbox"
@@ -95,7 +97,7 @@ function App() {
                 />
                 <div
                   key={todo}
-                  className={`${todo.isCompleted ? "line-through" : ""}`}
+                  className={`w-5xl ${todo.isCompleted ? "line-through" : ""}`}
                 >
                   {todo.todo}
                 </div>
@@ -104,13 +106,13 @@ function App() {
                     onClick={(e) => handleEdit(e, todo.id)}
                     className="bg-violet-900 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
                   >
-                    Edit
+                    <FontAwesomeIcon icon={faPencil} />
                   </button>
                   <button
                     onClick={(e) => handleDelete(e, todo.id)}
                     className="bg-violet-600 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
                   >
-                    Delete
+                    <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </div>
               </div>
