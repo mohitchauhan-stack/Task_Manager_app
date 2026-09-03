@@ -3,12 +3,14 @@ import { v4 as uuidv4 } from "uuid";
 import Navbar from "./components/Navbar";
 
 function App() {
-  const [todo, setTodo] = useState("");
-  const [todosArray, setTodosArray] = useState([]);
+  let [todo, setTodo] = useState("");
+  let [todosArray, setTodosArray] = useState([]);
 
   const handleEdit = () => {};
 
-  const handleDelete = () => {};
+  const handleDelete = (e, id) => {
+    console.log(id);
+  };
 
   const handleAdd = () => {
     setTodosArray([...todosArray, { todo, isCompleted: false, id: uuidv4() }]);
@@ -18,6 +20,16 @@ function App() {
 
   const handleChange = (e) => {
     setTodo(e.target.value);
+  };
+
+  const handleCheckBox = (e) => {
+    let id = e.target.name;
+    let index = todosArray.findIndex((todo) => {
+      return todo.id === id;
+    });
+    let newTodosArray = [...todosArray];
+    newTodosArray[index].isCompleted = !newTodosArray[index].isCompleted;
+    setTodosArray(newTodosArray);
   };
 
   return (
@@ -46,12 +58,12 @@ function App() {
         <div className="todos">
           {todosArray.map((todo) => {
             return (
-              <div className="flex w-full justify-between my-2">
+              <div key={todo.id} className="flex w-full justify-between my-2">
                 <input
                   onChange={handleCheckBox}
                   type="checkbox"
                   value={todo.isCompleted}
-                  name="checkBox"
+                  name={todo.id}
                   id="checkBox"
                 />
                 <div
@@ -68,7 +80,7 @@ function App() {
                     Edit
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={(e) => handleDelete(e, todo.id)}
                     className="bg-violet-600 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
                   >
                     Delete
