@@ -87,30 +87,34 @@ function App() {
           )}
           {todosArray.map((todo) => {
             return (
-              <div key={todo.id} className="flex justify-between my-2">
+              <div
+                key={todo.id}
+                className="flex items-start justify-between my-2"
+              >
                 <input
                   onChange={handleCheckBox}
                   type="checkbox"
                   value={todo.isCompleted}
                   name={todo.id}
                   id="checkBox"
+                  className="mr-2"
                 />
-                <div
+                <p
                   key={todo}
-                  className={`w-5xl ${todo.isCompleted ? "line-through" : ""}`}
+                  className={`min-w-0 flex-1 wrap-break-word bg-amber-300 ${todo.isCompleted ? "" : "line-through"}`}
                 >
                   {todo.todo}
-                </div>
-                <div className="buttons">
+                </p>
+                <div className="buttons flex">
                   <button
                     onClick={(e) => handleEdit(e, todo.id)}
-                    className="bg-violet-900 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
+                    className="cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md ml-2  "
                   >
                     <FontAwesomeIcon icon={faPencil} />
                   </button>
                   <button
                     onClick={(e) => handleDelete(e, todo.id)}
-                    className="bg-violet-600 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-2  "
+                    className="cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md ml-2  "
                   >
                     <FontAwesomeIcon icon={faTrash} />
                   </button>
