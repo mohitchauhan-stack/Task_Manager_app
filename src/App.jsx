@@ -17,7 +17,7 @@ function App() {
     }
   }, []);
 
-  const saveToLS = (params) => {
+  const saveToLS = (todosArray) => {
     localStorage.setItem("todosArray", JSON.stringify(todosArray));
   };
 
@@ -26,19 +26,26 @@ function App() {
     setTodo(todo[0].todo);
     let newTodosArray = todosArray.filter((todo) => todo.id != id);
     setTodosArray(newTodosArray);
-    saveToLS();
+    saveToLS(newTodosArray);
   };
 
   const handleDelete = (e, id) => {
-    let newTodosArray = todosArray.filter((todo) => todo.id != id);
+    let newTodosArray = todosArray.filter((todo) => {
+      return todo.id !== id;
+    });
     setTodosArray(newTodosArray);
-    saveToLS();
+    saveToLS(newTodosArray);
   };
 
   const handleAdd = () => {
-    setTodosArray([...todosArray, { todo, isCompleted: false, id: uuidv4() }]);
+    let newTodosArray = [
+      ...todosArray,
+      { todo, isCompleted: false, id: uuidv4() },
+    ];
+
+    setTodosArray(newTodosArray);
     setTodo("");
-    saveToLS();
+    saveToLS(newTodosArray);
   };
 
   const handleChange = (e) => {
@@ -47,19 +54,25 @@ function App() {
 
   const handleCheckBox = (e) => {
     let id = e.target.name;
-    let index = todosArray.findIndex((todo) => {
-      return todo.id === id;
+
+    let newTodosArray = todosArray.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          isCompleted: !todo.isCompleted,
+        };
+      }
+      return todo;
     });
-    let newTodosArray = [...todosArray];
-    newTodosArray[index].isCompleted = !newTodosArray[index].isCompleted;
+
     setTodosArray(newTodosArray);
-    saveToLS();
+    saveToLS(newTodosArray);
   };
 
   return (
     <>
       <Navbar />
-      <div className="container mx-auto h-[100vh] w-[400px]  bg-violet-200 p-4 rounded-2xl my-2">
+      <div className="container mx-auto h-screen w-100  bg-violet-200 p-4 rounded-2xl my-2">
         <div className="add_todo w-full my-5">
           <h2 className="text-lg font-bold">Add a todo</h2>
           <input
@@ -82,7 +95,7 @@ function App() {
         <div className="todos">
           {todosArray.length === 0 && (
             <div className="my-4 font-bold text-neutral-500">
-              No todos for now{" "}
+              No todos for now
             </div>
           )}
           {todosArray.map((todo) => {
@@ -96,12 +109,11 @@ function App() {
                   type="checkbox"
                   value={todo.isCompleted}
                   name={todo.id}
-                  id="checkBox"
+                  id={todo.id}
                   className="mr-2"
                 />
                 <p
-                  key={todo}
-                  className={`min-w-0 flex-1 wrap-break-word bg-amber-300 ${todo.isCompleted ? "" : "line-through"}`}
+                  className={`min-w-0 flex-1 wrap-break-word bg-amber-300 ${todo.isCompleted ? "line-through" : ""}`}
                 >
                   {todo.todo}
                 </p>
