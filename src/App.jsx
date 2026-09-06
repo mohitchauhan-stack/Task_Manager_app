@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     let todosString = localStorage.getItem("todosArray");
     if (todosString) {
-      let todosArray = JSON.parse(localStorage.getItem("todosArray"));
+      let todosArray = JSON.parse(todosString);
       setTodosArray(todosArray);
     }
   }, []);
@@ -72,27 +72,49 @@ function App() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto h-screen w-100  bg-violet-200 p-4 rounded-2xl my-2">
-        <div className="add_todo w-full my-5">
-          <h2 className="text-lg font-bold">Add a todo</h2>
+
+      <div className="mx-auto mt-4 w-full max-w-155 rounded-[28px] border border-white/40 bg-white/20 p-4 shadow-[0_18px_30px_rgba(127,160,190,0.16)] backdrop-blur-sm">
+        <div className="flex items-center gap-3">
           <input
             onChange={handleChange}
             value={todo}
-            className="bg-violet-50 h-8 rounded-sm"
+            className="h-16 flex-1 rounded-[18px] border border-white/30 bg-white/15 px-5 text-xl text-slate-700 placeholder:text-slate-400/90 focus:border-sky-300 focus:outline-none"
             type="text"
             name="todo"
             id="todo"
+            placeholder="What needs to be done?"
           />
 
           <button
             onClick={handleAdd}
-            className="bg-violet-600 hover:bg-violet-800 cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md mx-3  "
+            className="flex h-16 items-center justify-center rounded-[18px] bg-sky-400/90 px-6 text-xl font-semibold text-white shadow-[0_10px_20px_rgba(56,144,209,0.25)] transition-all duration-200 hover:bg-sky-500"
           >
-            Save
+            + Add
           </button>
         </div>
-        <h2 className="text-xl font-bold">Your Todos</h2>
-        <div className="todos">
+      </div>
+
+      <div className="mx-auto mt-8 w-full max-w-155 rounded-[28px] border border-white/35 bg-white/18 p-5 shadow-[0_18px_30px_rgba(127,160,190,0.14)] backdrop-blur-sm">
+        <div className="flex gap-3">
+          {[
+            { label: "All", active: true },
+            { label: "Active" },
+            { label: "Completed" },
+          ].map((tab) => (
+            <button
+              key={tab.label}
+              className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+                tab.label === "All"
+                  ? "bg-sky-400 text-white shadow-[0_8px_16px_rgba(56,144,209,0.24)]"
+                  : "bg-white/25 text-slate-600"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-5 space-y-3">
           {todosArray.length === 0 && (
             <div className="my-4 font-bold text-neutral-500">
               No todos for now
@@ -102,38 +124,52 @@ function App() {
             return (
               <div
                 key={todo.id}
-                className="flex items-start justify-between my-2"
+                className="flex items-center justify-between rounded-[18px] border border-white/25 bg-white/20 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]"
               >
-                <input
-                  onChange={handleCheckBox}
-                  type="checkbox"
-                  value={todo.isCompleted}
-                  name={todo.id}
-                  id={todo.id}
-                  className="mr-2"
-                />
-                <p
-                  className={`min-w-0 flex-1 wrap-break-word bg-amber-300 ${todo.isCompleted ? "line-through" : ""}`}
-                >
-                  {todo.todo}
-                </p>
-                <div className="buttons flex">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <input
+                    onChange={handleCheckBox}
+                    type="checkbox"
+                    checked={todo.isCompleted}
+                    value={todo.isCompleted}
+                    name={todo.id}
+                    id={todo.id}
+                    className="h-5 w-5 rounded border-slate-300 text-sky-500 focus:ring-sky-400"
+                  />
+                  <p
+                    className={`min-w-0 flex-1 truncate text-[1.1rem] font-medium ${
+                      todo.isCompleted
+                        ? "text-slate-500 line-through decoration-slate-500/80"
+                        : "text-slate-700"
+                    }`}
+                  >
+                    {todo.todo}
+                  </p>
+                </div>
+
+                <div className="ml-4 flex items-center gap-2 text-slate-500">
                   <button
                     onClick={(e) => handleEdit(e, todo.id)}
-                    className="cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md ml-2  "
+                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-transparent text-slate-500 transition-colors hover:bg-slate-200/60 hover:text-slate-700"
                   >
-                    <FontAwesomeIcon icon={faPencil} />
+                    <FontAwesomeIcon icon={faPencil} className="text-[1rem]" />
                   </button>
                   <button
                     onClick={(e) => handleDelete(e, todo.id)}
-                    className="cursor-pointer px-2 py-1 text-white transition-all duration-300 rounded-md ml-2  "
+                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-transparent text-slate-500 transition-colors hover:bg-slate-200/60 hover:text-slate-700"
                   >
-                    <FontAwesomeIcon icon={faTrash} />
+                    <FontAwesomeIcon icon={faTrash} className="text-[1rem]" />
                   </button>
                 </div>
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-5 text-center text-sm font-medium text-slate-600/90">
+          {`${todosArray.filter((item) => !item.isCompleted).length} active • ${
+            todosArray.filter((item) => item.isCompleted).length
+          } completed • ${todosArray.length} total`}
         </div>
       </div>
     </>
