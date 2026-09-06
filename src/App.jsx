@@ -6,8 +6,8 @@ import Navbar from "./components/Navbar";
 
 function App() {
   const [todo, setTodo] = useState("");
-
   const [todosArray, setTodosArray] = useState([]);
+  const [showCompleted, setShowCompleted] = useState(true);
 
   useEffect(() => {
     let todosString = localStorage.getItem("todosArray");
@@ -20,6 +20,8 @@ function App() {
   const saveToLS = (todosArray) => {
     localStorage.setItem("todosArray", JSON.stringify(todosArray));
   };
+
+  const toggleFinished = (params) => {};
 
   const handleEdit = (e, id) => {
     let todo = todosArray.filter((todo) => todo.id === id);
@@ -87,7 +89,8 @@ function App() {
 
           <button
             onClick={handleAdd}
-            className="flex h-16 items-center justify-center rounded-[18px] bg-sky-400/90 px-6 text-xl font-semibold text-white shadow-[0_10px_20px_rgba(56,144,209,0.25)] transition-all duration-200 hover:bg-sky-500"
+            disabled={todo.length <= 2}
+            className="flex h-16 items-center justify-center rounded-[18px] bg-sky-400/90 px-6 text-xl font-semibold text-white shadow-[0_10px_20px_rgba(56,144,209,0.25)] transition-all duration-200 hover:bg-sky-500 disabled:bg-sky-200"
           >
             + Add
           </button>
@@ -95,25 +98,26 @@ function App() {
       </div>
 
       <div className="mx-auto mt-8 w-full max-w-155 rounded-[28px] border border-white/35 bg-white/18 p-5 shadow-[0_18px_30px_rgba(127,160,190,0.14)] backdrop-blur-sm">
-        <div className="flex gap-3">
-          {[
-            { label: "All", active: true },
-            { label: "Active" },
-            { label: "Completed" },
-          ].map((tab) => (
-            <button
-              key={tab.label}
-              className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-                tab.label === "All"
-                  ? "bg-sky-400 text-white shadow-[0_8px_16px_rgba(56,144,209,0.24)]"
-                  : "bg-white/25 text-slate-600"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        {/* <div className="flex gap-3">
+          {[{ label: "All", active: true }, { label: "Completed" }].map(
+            (tab) => (
+              <button
+                key={tab.label}
+                className={`rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+                  tab.label === "All"
+                    ? "bg-sky-400 text-white shadow-[0_8px_16px_rgba(56,144,209,0.24)]"
+                    : "bg-white/25 text-slate-600"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ),
+          )}
+        </div> */}
+        <div className="completed flex gap-2">
+          <input type="checkbox" name="checkBox" checked={showCompleted} />
+          <h3>Completed</h3>
         </div>
-
         <div className="mt-5 space-y-3">
           {todosArray.length === 0 && (
             <div className="my-4 font-bold text-neutral-500">
@@ -165,7 +169,6 @@ function App() {
             );
           })}
         </div>
-
         <div className="mt-5 text-center text-sm font-medium text-slate-600/90">
           {`${todosArray.filter((item) => !item.isCompleted).length} active • ${
             todosArray.filter((item) => item.isCompleted).length
